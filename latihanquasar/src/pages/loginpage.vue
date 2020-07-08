@@ -32,6 +32,9 @@ Halaman Login
       <div>
         <q-btn label="Submit" type="submit" color="primary"/>
         <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn label="Register" type="submit" color="primary" flat class="q-ml-sm"
+        clickable
+        to="register"/>
       </div>
     </q-form>
     </q-card-section>
@@ -49,18 +52,19 @@ export default {
   },
   methods: {
     onSubmit () {
-      if (this.username === 'ferdi' && this.password === '18421034') {
-        this.$q.notify({
-          type: 'positive',
-          message: 'Selamat Anda Berhasil Login'
-        })
-        this.$router.push('/home')
-      } else {
-        this.$q.notify({
-          type: 'negative',
-          message: 'Gagal Login, username/password salah'
-        })
-      }
+      this.$axios.post('user/login', {
+        username: this.username,
+        password: this.password
+      }).then(res => {
+        if (res.data.sukses) {
+          this.$router.push({ name: 'dashboard' })
+        } else {
+          this.$q.notify({
+            type: 'negative',
+            message: res.data.pesan
+          })
+        }
+      })
     },
     onReset () {
       this.username = null

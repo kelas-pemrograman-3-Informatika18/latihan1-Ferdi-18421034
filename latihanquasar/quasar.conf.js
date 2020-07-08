@@ -63,7 +63,11 @@ module.exports = function (ctx) {
         'QCheckbox',
         'QRadio',
         'QCard',
-        'QCardSection'
+        'QCardSection',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd'
 
       ],
 

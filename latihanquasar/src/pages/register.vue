@@ -1,80 +1,93 @@
 <template>
-<q-page>
-Halaman Register
-<q-form
-      @submit="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md"
-    >
-      <q-input
-        filled
-        v-model="username"
-        label="Username Anda"
-        lazy-rules
-        :rules="[ val => val && val.length > 0 || 'Tolong ketik username']"
-      />
+  <q-page class="bg-light-blue-1">
+    <div class ="row">
+      <q-card class ="fixed-center col-md-4 col-xs-12 bg-white">
+        <q-card-section>
+          <div class ="text-h6 q-pb-md">
+          Halaman Register
+          </div>
+          <q-form
+            @submit="onSubmit"
+            @reset="onReset"
+            class="q-gutter-md"
+          >
+            <q-input
+              filled
+              v-model="username"
+              label="Username Anda"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Tolong Ketik Username']"
+            />
+            <q-input
+              filled
+              v-model="namaLengkap"
+              label="Nama Lengkap Anda"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Tolong Ketik Nama Lengkap']"
+            />
+            <q-input
+              filled
+              v-model="email"
+              label="E-mail Anda"
+              lazy-rules
+              :rules="[ val => val && val.length > 0 || 'Tolong Ketik E-mail Anda']"
+            />
 
-      <q-input
-        filled
-        type="password"
-        v-model="password"
-        label="Buat Password"
-        lazy-rules
-        :rules="[
-          val => val !== null && val > 0 || 'Password tidak boleh kosong'
-        ]"
-      />
-
-      <q-input
-        filled
-        label="Masukan Alamat Anda"
-        lazy-rules
-        :rules="[
-          val => val !== null && val > 0 || 'Alamat tidak boleh kosong'
-        ]"
-      />
-
-       <div class="q-pa-md q-gutter-sm">
-    <div class="q-gutter-sm">
-      <q-radio dense v-model="shape" val="Sudah Menikah" label="Sudah Menikah" />
-      <q-radio dense v-model="shape" val="Belum Menikah" label="Belum Menikah" />
+            <q-input
+              filled
+              type="password"
+              v-model="password"
+              label="Password Anda"
+              lazy-rules
+              :rules="[
+                val => val !== null && val.length > 0 || 'Password Tidak Boleh Kosong'
+              ]"
+            />
+            <div class="q-gutter-md">
+              <q-btn label="Register" type="submit" color="primary"/>
+              <q-btn label="Login" to="/" flat color="primary"/>
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
     </div>
-
-    <div class="q-px-sm q-pt-sm">
-      Anda Ternyata: <strong>{{ shape }}</strong>
-    </div>
-  </div>
-
-  <q-input
-        filled
-        label="Masukan Nomor Telepon Anda"
-        lazy-rules
-        :rules="[
-          val => val !== null && val > 0 || 'Nomor Tidak boleh kosong'
-        ]"
-      />
-
-      <div>
-        <q-btn label="Daftar" type="submit" color="purple"/>
-        <q-btn label="Reset" type="reset" color="red" />
-      </div>
-    </q-form>
-</q-page>
+  </q-page>
 </template>
 <script>
 export default {
   data () {
     return {
       username: null,
-      password: null
+      password: null,
+      namaLengkap: null,
+      email: null
     }
   },
   methods: {
     onSubmit () {
-      console.log('ini fungsi submit')
+      this.$axios.post('user/register', {
+        username: this.username,
+        password: this.password,
+        namaLengkap: this.namaLengkap,
+        email: this.email
+      }).then((res) => {
+        if (res.data.sukses) {
+          this.$q.notify({
+            type: 'positive',
+            message: res.data.pesan
+          })
+          this.$router.push({ name: 'login' })
+        } else {
+          this.$q.notify({
+            type: 'negative',
+            message: res.data.pesan
+          })
+        }
+      })
     },
     onReset () {
-      console.log('ini fungsi reset')
+      this.username = null
+      this.password = null
     }
   }
 }
